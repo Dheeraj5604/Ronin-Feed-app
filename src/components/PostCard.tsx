@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { deleteImageFromBucket } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
+import { X,Heart } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
@@ -27,8 +28,38 @@ interface PostCardProps {
 
 const PostCard = ({ post, currentUserId, onUpdate }: PostCardProps) => {
   const [isLiking, setIsLiking] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const isLiked = post.likes.some((like) => like.user_id === currentUserId);
   const likesCount = post.likes.length;
+  const handleDelete = async () => {
+  if (!confirm("Are you sure you want to delete this post?")) return;
+  setIsDeleting(true);
+
+  try {
+    // Extract the path inside the bucket
+    const url = new URL(post.image_url);
+    const path = url.pathname.split("/").slice(2).join("/"); // skip /storage/v1/object/public/bucket-name/
+
+    // Remove from bucket
+    await deleteImageFromBucket("post-images", path);
+
+    // Delete DB record
+    const { error: dbError } = await supabase
+      .from("posts")
+      .delete()
+      .eq("id", post.id);
+    if (dbError) throw dbError;
+
+    toast.success("Post deleted!");
+    onUpdate(); // Refresh posts in the UI
+  } catch (err: any) {
+    console.error("Delete error:", err);
+    toast.error(err.message || "Failed to delete post");
+  } finally {
+    setIsDeleting(false);
+  }
+};
+
 
   const handleLike = async () => {
     if (isLiking) return;
@@ -81,6 +112,20 @@ const PostCard = ({ post, currentUserId, onUpdate }: PostCardProps) => {
           </p>
         </div>
       </CardHeader>
+
+      {/* Delete button only for post owner */}
+{currentUserId === post.user_id && (
+  <Button
+    size="icon"
+    variant="ghost"
+    onClick={handleDelete}
+    disabled={isDeleting}
+    className="hover:bg-red-100 transition-smooth"
+  >
+    <X className="h-5 w-5 text-red-500" />
+  </Button>
+)}
+
 
       <CardContent className="p-0">
         <img
