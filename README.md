@@ -124,3 +124,8 @@ The app uses email-based authentication with auto-confirmed signups. Users must 
 <img width="1919" height="864" alt="image" src="https://github.com/user-attachments/assets/9e322f96-f894-435e-823f-4e5a6a98d1cb" />
 <img width="1897" height="870" alt="image" src="https://github.com/user-attachments/assets/e40e9388-561a-4ccf-a361-e62824597e53" />
 
+##Assumptions and Bonus features:
+1.Responsive layout
+2.Reusable components
+3.Additional animations or UI polishing
+4.Extra validations or extended capabilities
