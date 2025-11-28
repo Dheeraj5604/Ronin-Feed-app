@@ -119,3 +119,8 @@ The app uses email-based authentication with auto-confirmed signups. Users must 
 4. Like Posts: Click the heart icon or double-tap on mobile
 5. Follow Users: Click on usernames to view profiles and follow them
 6. Profile: View your posts and edit your profile
+
+##ScreenShots
+<img width="1919" height="864" alt="image" src="https://github.com/user-attachments/assets/9e322f96-f894-435e-823f-4e5a6a98d1cb" />
+<img width="1897" height="870" alt="image" src="https://github.com/user-attachments/assets/e40e9388-561a-4ccf-a361-e62824597e53" />
+
